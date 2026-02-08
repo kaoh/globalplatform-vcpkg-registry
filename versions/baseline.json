@@ -1,8 +1,4 @@
 {
   "default": {
-    "globalplatform": {
-      "baseline": "8.0.0",
-      "port-version": 1
-    }
   }
 }
