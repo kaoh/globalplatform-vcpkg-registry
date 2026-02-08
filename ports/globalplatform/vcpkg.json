@@ -6,9 +6,9 @@
   "homepage": "https://github.com/kaoh/globalplatform",
   "license": "LGPL-3.0-or-later",
   "dependencies": [
+    "openssl",
     "vcpkg-cmake",
     "vcpkg-cmake-config",
-    "zlib",
-    "openssl"
+    "zlib"
   ]
 }
