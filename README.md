@@ -42,7 +42,4 @@ nano ports/globalplatform/portfile.cmake
 
 ~~~shell
 ~/vcpkg/vcpkg x-add-version globalplatform --x-builtin-ports-root=./ports --x-builtin-registry-versions-dir=./versions --overwrite-version
-
-~/vcpkg/vcpkg x-add-version globalplatform --vcpkg-root=. --overwrite-version
-
 ~~~
