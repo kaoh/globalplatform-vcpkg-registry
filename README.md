@@ -2,7 +2,7 @@
 
 [vcpkg registry](https://vcpkg.io) for [GlobalPlatform library](https://github.com/kaoh/globalplatform).
 
-# Version Update
+# Registry Version Update Instructions
 
 Update the GlobalPlatform library version:
 
@@ -42,4 +42,52 @@ nano ports/globalplatform/portfile.cmake
 
 ~~~shell
 ~/vcpkg/vcpkg x-add-version globalplatform --x-builtin-ports-root=./ports --x-builtin-registry-versions-dir=./versions --overwrite-version
+~~~
+
+# Registry User Instructions
+
+Create `vcpkg.json` in the project:
+
+~~~json
+{
+  "name": "globalplatform-consumer",
+  "version-string": "0.0.0",
+  "dependencies": [
+    "globalplatform"
+  ],
+  "builtin-baseline": "aa2d37682e3318d93aef87efa7b0e88e81cd3d59"
+}
+~~~
+
+Create `vcpkg-configuration.json` in the project:
+
+~~~json
+{
+  "registries": [
+    {
+      "kind": "git",
+      "baseline": "fd4199d65c3dabbc653f5e741b77753252b7eab6",
+      "repository": "https://github.com/kaoh/globalplatform-vcpkg-registry",
+      "packages": [
+        "globalplatform"
+      ]
+    }
+  ]
+}
+~~~
+
+Update `baseline`:
+
+~~~shell
+~/vcpkg/vcpkg x-update-baseline --add-initial-baseline 
+~~~
+
+Create a CMake project. Then run CMake:
+
+~~~shell
+cmake -S . -B build -G Ninja \
+  -DCMAKE_MAKE_PROGRAM=/usr/bin/ninja \
+  -DCMAKE_TOOLCHAIN_FILE=~/vcpkg/scripts/buildsystems/vcpkg.cmake 
+
+cmake --build build
 ~~~
