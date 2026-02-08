@@ -1,0 +1,14 @@
+{
+  "name": "globalplatform",
+  "version-string": "8.0.0",
+  "port-version": 1,
+  "description": "GlobalPlatform library (libglobalplatform) and PC/SC connection plugin (libgppcscconnectionplugin)",
+  "homepage": "https://github.com/kaoh/globalplatform",
+  "license": "LGPL-3.0-or-later",
+  "dependencies": [
+    "vcpkg-cmake",
+    "vcpkg-cmake-config",
+    "zlib",
+    "openssl"
+  ]
+}
