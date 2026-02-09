@@ -2,7 +2,9 @@
 
 [vcpkg registry](https://vcpkg.io) for [GlobalPlatform library](https://github.com/kaoh/globalplatform).
 
-# Registry Version Update Instructions
+# Manual Registry Version Update Instructions
+
+__NOTE:__ The existing workflow updates the registry automatically on version updates of the GlobalPlatform library.
 
 Update the GlobalPlatform library version:
 
