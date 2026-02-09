@@ -12,7 +12,7 @@ nano ports/globalplatform/vcpkg.json
 
 Set the version accordingly:
 
-`"version-string": "8.0.0",`
+`"version": "8.0.0",`
 
 Update the tag and set the `SHA512` to 0:
 
@@ -27,6 +27,7 @@ Set the tag:
 Copy the failed hash value from the `install` command:
 
 ~~~shell
+rm ~/vcpkg/downloads/kaoh-globalplatform*
 ~/vcpkg/vcpkg install globalplatform --overlay-ports=./ports
 ~~~
 
