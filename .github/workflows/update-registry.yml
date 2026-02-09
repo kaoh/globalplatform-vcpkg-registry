@@ -1,0 +1,72 @@
+name: Update vcpkg registry
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 3 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  update-globalplatform:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout registry
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Update SHA512 and versions
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          PORTFILE="ports/globalplatform/portfile.cmake"
+          REPO="https://github.com/kaoh/globalplatform"
+
+          ref="$(sed -n 's/^[[:space:]]*REF[[:space:]]\+\(.*\)$/\1/p' "$PORTFILE" | head -n1)"
+          current_sha="$(sed -n 's/^[[:space:]]*SHA512[[:space:]]\+\(.*\)$/\1/p' "$PORTFILE" | head -n1)"
+
+          if [[ -z "$ref" ]]; then
+            echo "Could not read REF from $PORTFILE" >&2
+            exit 1
+          fi
+
+          if git ls-remote --exit-code --tags "$REPO" "refs/tags/$ref" >/dev/null 2>&1; then
+            ref_kind="tags"
+          elif git ls-remote --exit-code --heads "$REPO" "refs/heads/$ref" >/dev/null 2>&1; then
+            ref_kind="heads"
+          else
+            echo "REF '$ref' not found in $REPO" >&2
+            exit 1
+          fi
+
+          archive_url="${REPO}/archive/refs/${ref_kind}/${ref}.tar.gz"
+          new_sha="$(curl -fsSL "$archive_url" | sha512sum | awk '{print $1}')"
+
+          if [[ -z "$new_sha" ]]; then
+            echo "Failed to compute SHA512 from $archive_url" >&2
+            exit 1
+          fi
+
+          if [[ "$new_sha" == "$current_sha" ]]; then
+            echo "SHA512 unchanged for REF '$ref'"
+            exit 0
+          fi
+
+          sed -i "s/^[[:space:]]*SHA512[[:space:]]\\+.*/    SHA512 ${new_sha}/" "$PORTFILE"
+
+          vcpkg_dir="${RUNNER_TEMP}/vcpkg"
+          git clone https://github.com/microsoft/vcpkg.git "$vcpkg_dir"
+          "$vcpkg_dir/bootstrap-vcpkg.sh" -disableMetrics
+
+          "$vcpkg_dir/vcpkg" x-add-version globalplatform \
+            --x-builtin-ports-root=./ports \
+            --x-builtin-registry-versions-dir=./versions \
+            --overwrite-version
+
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Update globalplatform SHA512"
