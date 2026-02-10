@@ -55,10 +55,9 @@ jobs:
 
           if [[ "$new_sha" == "$current_sha" ]]; then
             echo "SHA512 unchanged for REF '$ref'"
-            exit 0
+          else
+            sed -i "s/^[[:space:]]*SHA512[[:space:]]\\+.*/    SHA512 ${new_sha}/" "$PORTFILE"
           fi
-
-          sed -i "s/^[[:space:]]*SHA512[[:space:]]\\+.*/    SHA512 ${new_sha}/" "$PORTFILE"
 
           vcpkg_dir="${RUNNER_TEMP}/vcpkg"
           git clone https://github.com/microsoft/vcpkg.git "$vcpkg_dir"
