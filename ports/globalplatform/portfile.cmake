@@ -17,7 +17,6 @@ vcpkg_cmake_configure(
     OPTIONS
         -DTOOLS=OFF
         -DSTATIC=${GP_STATIC}
-        -DCMAKE_C_FLAGS=${VCPKG_C_FLAGS}
 )
 
 vcpkg_cmake_install()
