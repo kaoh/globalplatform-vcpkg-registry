@@ -12,21 +12,12 @@ else()
     set(GP_STATIC OFF)
 endif()
 
-set(_gp_static_def "")
-if(GP_STATIC)
-    if(VCPKG_TARGET_IS_WINDOWS)
-        set(_gp_static_def "/DOPGP_STATIC_PCSC")
-    else()
-        set(_gp_static_def "-DOPGP_STATIC_PCSC")
-    endif()
-endif()
-
 vcpkg_cmake_configure(
     SOURCE_PATH "${SOURCE_PATH}"
     OPTIONS
         -DTOOLS=OFF
         -DSTATIC=${GP_STATIC}
-        -DCMAKE_C_FLAGS=${VCPKG_C_FLAGS}\ ${_gp_static_def}
+        -DCMAKE_C_FLAGS=${VCPKG_C_FLAGS}
 )
 
 vcpkg_cmake_install()
