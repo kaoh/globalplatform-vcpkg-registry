@@ -12,15 +12,35 @@ else()
     set(GP_STATIC OFF)
 endif()
 
+set(_gp_static_def "")
+if(GP_STATIC)
+    if(VCPKG_TARGET_IS_WINDOWS)
+        set(_gp_static_def "/DOPGP_STATIC_PCSC")
+    else()
+        set(_gp_static_def "-DOPGP_STATIC_PCSC")
+    endif()
+endif()
+
 vcpkg_cmake_configure(
     SOURCE_PATH "${SOURCE_PATH}"
     OPTIONS
         -DTOOLS=OFF
         -DSTATIC=${GP_STATIC}
-        -DCMAKE_C_FLAGS=${VCPKG_C_FLAGS}\ -DOPGP_STATIC_PCSC
+        -DCMAKE_C_FLAGS=${VCPKG_C_FLAGS}\ ${_gp_static_def}
 )
 
 vcpkg_cmake_install()
+
+if(VCPKG_TARGET_IS_WINDOWS)
+    foreach(_cfg IN ITEMS "" "debug/")
+        set(_src "${CURRENT_PACKAGES_DIR}/${_cfg}lib/gppcscconnectionplugin.dll")
+        if(EXISTS "${_src}")
+            file(MAKE_DIRECTORY "${CURRENT_PACKAGES_DIR}/${_cfg}bin")
+            file(COPY "${_src}" DESTINATION "${CURRENT_PACKAGES_DIR}/${_cfg}bin")
+            file(REMOVE "${_src}")
+        endif()
+    endforeach()
+endif()
 
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
 
@@ -36,7 +56,7 @@ file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/lib/cmake")
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/lib/cmake")
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/share")
 
-file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/share/doc")
+file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/share")
 
 vcpkg_install_copyright(FILE_LIST
     "${SOURCE_PATH}/globalplatform/LICENSE"
