@@ -2,7 +2,7 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO kaoh/globalplatform
     REF packaging
-    SHA512 7b7a17d59dddf7afb47f9436f35ee606e2d8cec4ca959ceb9c376787d4740b32c5fa9d8fe48a3f3347cfe533f83b725101f58454f87315f81d068a50525a7a59
+    SHA512 852bbab7b64b7a26d2cb78e1329a8c11389701345a1d28cce7f7e0260a19cbb83f0c32fee6a826e41bf2583c5cd95bebfeaf5c8e5451fc7648e81a852da0e0e2
 )
 
 # Map vcpkg linkage -> your STATIC option
